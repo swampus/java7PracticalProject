@@ -49,6 +49,12 @@ public class Main extends Application {
                         button1.setOnAction(e -> {
                             //Open information dialog that says hello
                             primaryStage.setScene(scene);
+                            Table1 table1 = new Table1();
+                            table1.setUser("AAAAAAAAAAAAAAAAAAAAAAA");
+                            HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
+                            HibernateUtil.getSessionFactory().getCurrentSession().save(table1);
+                            HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().commit();
+
                         });
                     }
                 }
@@ -80,7 +86,8 @@ public class Main extends Application {
             Server server = Server.createWebServer().start();
             System.out.println("port: " + server.getPort());
             System.out.println("status: " + server.getStatus());
-            Connection con = DriverManager.getConnection("jdbc:h2:mem:testdb", "sa", "password");
+            Connection con = DriverManager.getConnection("jdbc:h2:mem:testdb", "sa",
+                    "password");
             Statement stmt = con.createStatement();
             //stmt.executeUpdate( "DROP TABLE table1" );
             stmt.executeUpdate("CREATE TABLE table1 ( user varchar(50) )");
