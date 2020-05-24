@@ -1,111 +1,130 @@
 package com.java7.practical.project.sample;
 
+import com.java7.practical.project.sample.service.UserService;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.DatePicker;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import org.h2.tools.Server;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.SQLException;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
+import java.util.stream.Stream;
 
 public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("/sample.fxml"));
-        Parent root2 = FXMLLoader.load(getClass().getResource("/user_registration.fxml"));
+        Parent userRegistrationForm = FXMLLoader.load(getClass().getResource("/user_registration.fxml"));
+        Scene userRegistrationFormScene = new Scene(userRegistrationForm, 300, 275);
+        Scene rootFormScene = new Scene(root, 300, 275);
 
-        primaryStage.setTitle("Hello World !!");
+        Button btn = userRegistrationForm.getChildrenUnmodifiable().stream()
+                .filter(t -> "addUserControls".equals(t.getId()))
+                .map(t -> (VBox) t)
+                .findAny().get().getChildrenUnmodifiable()
+                .stream()
+                .filter(t -> "addUserBtn".equals(t.getId()))
+                .map(t -> (Button) t).findAny().get();
 
-        StackPane stackPane = new StackPane();
-        Scene scene2 = new Scene(root, 300, 275);
-        Scene scene = new Scene(stackPane, 300, 275);
-        primaryStage.setScene(scene);
-        Button button = new Button("NAME");
-        button.setOnAction(e -> {
-            //Open information dialog that says hello
-            primaryStage.setScene(scene2);
-        });
+        VBox vBox = userRegistrationForm.getChildrenUnmodifiable().stream()
+                .filter(t -> "addUserControls".equals(t.getId()))
+                .map(t-> (VBox) t)
+                .findAny()
+                .get();
 
-        Button secondButton = null;
-        for (Node node : root.getChildrenUnmodifiable()) {
-            System.out.println(node.getId());
+        VBox vBoxRoot = root.getChildrenUnmodifiable().stream()
+                .filter(t -> "textControlls".equals(t.getId()))
+                .map(t-> (VBox) t)
+                .findAny()
+                .get();
 
-            if (node.getId().equals("myBox")) {
-                HBox hBox = (HBox) node;
-                for (Node node2 : hBox.getChildren()) {
-                    if (node2.getId().equals("myButton")) {
-                        Button button1 = (Button) node2;
+        btn.setOnAction(t -> {
+            System.out.println("user insert in progress");
+            UserService userService = new UserService();
+            String firstName =
+                    extractTexfieldFromParent(vBox, "first_name").getText();
+            String lastName =
+                    extractTexfieldFromParent(vBox, "last_name").getText();
+            String address =
+                    extractTexfieldFromParent(vBox, "address").getText();
+            String userName =
+                    extractTexfieldFromParent(vBox, "user_name").getText();
+            String email =
+                    extractTexfieldFromParent(vBox, "email").getText();
 
-
-                        button1.setOnAction(e -> {
-                            //Open information dialog that says hello
-                            primaryStage.setScene(scene);
-                            Table1 table1 = new Table1();
-                            table1.setUser("AAAAAAAAAAAAAAAAAAAAAAA");
-                            HibernateUtil.getSessionFactory().getCurrentSession().beginTransaction();
-                            HibernateUtil.getSessionFactory().getCurrentSession().save(table1);
-                            HibernateUtil.getSessionFactory().getCurrentSession().getTransaction().commit();
-
-                        });
-                    }
-                }
+            LocalDate localDate =
+                    extractDatePickerFromParent(vBox, "birth_date")
+                            .getValue();
+            Date date = null;
+            if(localDate != null){
+                Instant instant = Instant.from(localDate.atStartOfDay(ZoneId.systemDefault()));
+                date = Date.from(instant);
             }
 
-        }
+             String result
+                     = userService.addUser(userName,firstName,lastName,email,date,address);
+             System.out.println(result);
 
 
-        stackPane.getChildren().add(button);
+
+            Text text = extractTextFromParent(vBoxRoot, "addUserResult");
+            text.setText(result);
+            primaryStage.setScene(rootFormScene);
+        });
 
 
-        HBox hbox = root.getChildrenUnmodifiable().stream()
-                .filter(t -> t.getId().equals("myBox"))
-                .map(t -> (HBox) t)
-                .findAny().get();
-
-
-        Button myButton = new Button("ME NEW BUTTON!");
-        hbox.getChildren().add(myButton);
-
-
+        primaryStage.setScene(userRegistrationFormScene);
         primaryStage.show();
     }
 
 
-    public static void main(String[] args) {
-        try {
-            Class.forName("org.h2.Driver");
-            Server server = Server.createWebServer().start();
-            System.out.println("port: " + server.getPort());
-            System.out.println("status: " + server.getStatus());
-            Connection con = DriverManager.getConnection("jdbc:h2:mem:testdb", "sa",
-                    "password");
-            Statement stmt = con.createStatement();
-            //stmt.executeUpdate( "DROP TABLE table1" );
-            stmt.executeUpdate("CREATE TABLE table1 ( user varchar(50) )");
-            stmt.executeUpdate("INSERT INTO table1 ( user ) VALUES ( 'Claudio' )");
-            stmt.executeUpdate("INSERT INTO table1 ( user ) VALUES ( 'Bernasconi' )");
-            ResultSet rs = stmt.executeQuery("SELECT * FROM table1");
-            while (rs.next()) {
-                String name = null;
+    public static void main(String[] args) throws ClassNotFoundException,
+            SQLException {
 
-                name = rs.getString("user");
-                System.out.println(name);
-            }
-            stmt.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-
-        }
+        Class.forName("org.h2.Driver");
+        Server server = Server.createWebServer().start();
+        System.out.println("port: " + server.getPort());
+        System.out.println("status: " + server.getStatus());
 
         launch(args);
     }
+
+    private TextField extractTexfieldFromParent(VBox vBox, String id) {
+        return getNodeStream(vBox, id)
+                .map(t -> (TextField) t).findFirst().get();
+    }
+
+    private DatePicker extractDatePickerFromParent(VBox vBox, String id) {
+        return getNodeStream(vBox, id)
+                .map(t -> (DatePicker) t).findFirst().get();
+    }
+
+    private Text extractTextFromParent(VBox vBox, String id) {
+        return getNodeStream(vBox, id)
+                .map(t -> (Text) t).findFirst().get();
+    }
+
+    private Stream<Node> getNodeStream(VBox vBox, String id) {
+        return vBox.getChildren().stream()
+                .filter(t -> (t instanceof HBox))
+                .map(t -> (HBox) t)
+                .flatMap(t -> t.getChildren().stream())
+                .filter(t -> id.equals(t.getId()));
+    }
+
 }

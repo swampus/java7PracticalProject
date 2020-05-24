@@ -6,10 +6,10 @@ import javax.persistence.Id;
 
 @Entity(name = "Table1")
 public class Table1 {
+
     @Id
     @Column(name= "user")
     private String user;
-
 
     public String getUser() {
         return user;

@@ -1,5 +1,6 @@
 package com.java7.practical.project.sample;
 
+
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 

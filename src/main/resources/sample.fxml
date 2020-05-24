@@ -5,12 +5,15 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.text.Text?>
+<?import javafx.scene.layout.VBox?>
 <GridPane fx:controller="com.java7.practical.project.sample.Controller"
           xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
 
-    <HBox fx:id="myBox" spacing="10" alignment="bottom_right"
-          GridPane.columnIndex="1" GridPane.rowIndex="4">
-        <Button fx:id="myButton" text="Sign In"/>
-    </HBox>
+    <VBox fx:id="textControlls">
+        <HBox>
+            <Text fx:id="addUserResult" text="" />
+        </HBox>
+    </VBox>
 
 </GridPane>
