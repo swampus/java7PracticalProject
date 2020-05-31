@@ -15,9 +15,13 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import org.flywaydb.core.Flyway;
 import org.h2.tools.Server;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -97,10 +101,24 @@ public class Main extends Application {
             SQLException {
 
         Class.forName("org.h2.Driver");
-        Server server = Server.createWebServer().start();
+        Server server = Server.createWebServer("-ifNotExists").start();
         System.out.println("port: " + server.getPort());
         System.out.println("status: " + server.getStatus());
 
+        //Connection conn = DriverManager.getConnection("jdbc:h2:mem:testdb", "sa", "");
+/*
+        Connection conn = DriverManager.getConnection("jdbc:h2:file:C:/database/test.mv.db", "sa", "");
+        Statement st = conn.createStatement();
+        st.execute("create SCHEMA IF NOT EXISTS T1");
+*/
+
+       Flyway flyway = Flyway.configure()
+                .dataSource("jdbc:h2:file:C:/database/test2.mv.db", "sa", "")
+                .load();
+
+        // Start the migration
+        flyway.clean();
+        flyway.migrate();
         launch(args);
     }
 
