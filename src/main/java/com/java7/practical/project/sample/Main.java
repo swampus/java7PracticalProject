@@ -34,8 +34,11 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         Parent root = FXMLLoader.load(getClass().getResource("/sample.fxml"));
         Parent userRegistrationForm = FXMLLoader.load(getClass().getResource("/user_registration.fxml"));
+        Parent userViewForm = FXMLLoader.load(getClass().getResource("/user_view.fxml"));
+
         Scene userRegistrationFormScene = new Scene(userRegistrationForm, 300, 275);
         Scene rootFormScene = new Scene(root, 300, 275);
+        Scene userView = new Scene(userViewForm, 700, 350);
 
         Button btn = userRegistrationForm.getChildrenUnmodifiable().stream()
                 .filter(t -> "addUserControls".equals(t.getId()))
@@ -45,17 +48,32 @@ public class Main extends Application {
                 .filter(t -> "addUserBtn".equals(t.getId()))
                 .map(t -> (Button) t).findAny().get();
 
+        Button viewUserBtn = userRegistrationForm.getChildrenUnmodifiable().stream()
+                .filter(t -> "addUserControls".equals(t.getId()))
+                .map(t -> (VBox) t)
+                .findAny().get().getChildrenUnmodifiable()
+                .stream()
+                .filter(t -> "viewUserBtn".equals(t.getId()))
+                .map(t -> (Button) t).findAny().get();
+
         VBox vBox = userRegistrationForm.getChildrenUnmodifiable().stream()
                 .filter(t -> "addUserControls".equals(t.getId()))
                 .map(t-> (VBox) t)
                 .findAny()
                 .get();
 
+
+
         VBox vBoxRoot = root.getChildrenUnmodifiable().stream()
                 .filter(t -> "textControlls".equals(t.getId()))
                 .map(t-> (VBox) t)
                 .findAny()
                 .get();
+
+        viewUserBtn.setOnAction(t-> {
+            primaryStage.setWidth(700);
+            primaryStage.setScene(userView);
+        });
 
         btn.setOnAction(t -> {
             System.out.println("user insert in progress");
@@ -115,9 +133,7 @@ public class Main extends Application {
        Flyway flyway = Flyway.configure()
                 .dataSource("jdbc:h2:file:C:/database/test2.mv.db", "sa", "")
                 .load();
-
-        // Start the migration
-        flyway.clean();
+        //flyway.clean();
         flyway.migrate();
         launch(args);
     }

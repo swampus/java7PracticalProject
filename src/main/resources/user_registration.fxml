@@ -1,32 +1,45 @@
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Text?>
-<?import javafx.scene.shape.Line?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.DatePicker?>
+
 <GridPane fx:controller="com.java7.practical.project.sample.Controller"
           xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
-<VBox fx:id="addUserControls">
-    <Text text="Create user form" />
-    <HBox>
-        <Label text="UserName:"/><TextField fx:id="user_name"/>
-    </HBox>
-    <HBox>
-        <Label text="First name:"/><TextField fx:id="first_name"/>
-    </HBox>
-    <HBox>
-        <Label text="Last name:"/><TextField fx:id="last_name"/>
-    </HBox>
-    <HBox>
-        <Label text="Address:"/><TextField fx:id="address"/>
-    </HBox>
-    <HBox>
-        <Label text="Email:"/><TextField fx:id="email"/>
-    </HBox>
-    <HBox>
-        <Label text="Date:"/><DatePicker fx:id="birth_date"/>
-    </HBox>
-    <Button id="addUserBtn" text=" [ADD USER] "/>
-</VBox>
+
+    <VBox fx:id="addUserControls">
+        <Label style="-fx-background-color: red; -fx-text-fill: white">
+            I'm feeling RED.
+        </Label>
+
+        <Text text="Create user form"/>
+        <HBox>
+            <Label text="UserName:"/>
+            <TextField fx:id="user_name" style="-fx-font-size: 14px;" />
+        </HBox>
+        <HBox>
+            <Label text="First name:"/>
+            <TextField fx:id="first_name"/>
+        </HBox>
+        <HBox>
+            <Label text="Last name:"/>
+            <TextField fx:id="last_name"/>
+        </HBox>
+        <HBox>
+            <Label text="Address:"/>
+            <TextField fx:id="address"/>
+        </HBox>
+        <HBox>
+            <Label text="Email:"/>
+            <TextField fx:id="email"/>
+        </HBox>
+        <HBox>
+            <Label text="Date:"/>
+            <DatePicker fx:id="birth_date"/>
+        </HBox>
+        <HBox>
+            <Label text="Disabled Example:"/>
+            <TextField fx:id="test" style="-fx-opacity: 0.3; -fx-text-fill: black;"/>
+        </HBox>
+        <Button id="addUserBtn" text=" [ADD USER] "/>
+        <Button id="viewUserBtn" text=" [VIEW USER] "/>
+    </VBox>
 </GridPane>

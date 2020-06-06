@@ -5,10 +5,14 @@ import com.java7.practical.project.sample.repository.UserRepository;
 import org.h2.util.StringUtils;
 
 import java.util.Date;
+import java.util.List;
 
 public class UserService {
     private final UserRepository userRepository = new UserRepository();
 
+    public List<User> getAllUser(){
+        return userRepository.getlAllUser();
+    }
 
     public String addUser(String userName, String firstname,
                           String lastname, String email,

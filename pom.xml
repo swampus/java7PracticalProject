@@ -12,7 +12,7 @@
 
         <flyway.user>sa</flyway.user>
         <flyway.password></flyway.password>
-        <flyway.url>jdbc:h2:file:C:/database/test.mv.db</flyway.url>
+        <flyway.url>jdbc:h2:file:C:/database/test2.mv.db</flyway.url>
         <!-- List are defined as comma-separated values -->
 
         <flyway.schemas>T1</flyway.schemas>
